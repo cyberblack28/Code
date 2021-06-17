@@ -10,10 +10,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-        # イメージビルド
-      - name: Registory login
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
-
       - name: Build an image from Dockerfile
         run: |
           # Dockerビルド
@@ -32,10 +28,10 @@ jobs:
         # コンテナイメージをDocker Hubにプッシュ
       - name: Push image to Docker Hub
         run: |
-          # Docker Hub ログイン
-          docker login docker.io --username ${{ secrets.USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+          # GitHub Packages ログイン
+          run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
           # イメージプッシュ
-          docker push ${{ secrets.USERNAME }}/gitops-go-app:${{ github.run_number }}
+          docker push docker.pkg.github.com/${{ secrets.USERNAME }}/gitops-go-app:${{ github.run_number }}
         # values.yamlの更新、新規ブランチ作成、プッシュ、プルリクエスト
       - name: Update values.yaml & Pull Request to Config Repository
         run: |
