@@ -31,7 +31,8 @@ jobs:
       - name: Push image to GitHub Packages
         run: |
           # GitHub Packages ログイン
-          run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
+          echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} > token.txt
+          run: cat token.txt | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
           # イメージプッシュ
           docker image push docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
         # values.yamlの更新、新規ブランチ作成、プッシュ、プルリクエスト
