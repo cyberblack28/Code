@@ -15,13 +15,13 @@ jobs:
       - name: Build an image from Dockerfile
         run: |
           # Dockerビルド
-          DOCKER_BUILDKIT=1 docker build . -f app/Dockerfile --tag  docker.pkg.github.com/${{ secrets.USERNAME }}/gitops-go-app:${{ github.run_number }}
+          DOCKER_BUILDKIT=1 docker build . -f app/Dockerfile --tag  docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
           
         # Trivyによるイメージスキャン
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.pkg.github.com/${{ secrets.USERNAME }}/gitops-go-app:${{ github.run_number }}'
+          image-ref: 'docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -33,7 +33,7 @@ jobs:
           # GitHub Packages ログイン
           run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
           # イメージプッシュ
-          docker push docker.pkg.github.com/${{ secrets.USERNAME }}/code/gitops-go-app:${{ github.run_number }}
+          docker push docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
         # values.yamlの更新、新規ブランチ作成、プッシュ、プルリクエスト
       - name: Update values.yaml & Pull Request to Config Repository
         run: |
