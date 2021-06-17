@@ -25,11 +25,11 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
 
-        # コンテナイメージをDocker Hubにプッシュ
-      - name: Push image to Docker Hub
+        # コンテナイメージをGitHub Packagesにプッシュ
+      - name: Push image to GitHub Packages
         run: |
           # GitHub Packages ログイン
-          run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
+          run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
           # イメージプッシュ
           docker push docker.pkg.github.com/${{ secrets.USERNAME }}/gitops-go-app:${{ github.run_number }}
         # values.yamlの更新、新規ブランチ作成、プッシュ、プルリクエスト
