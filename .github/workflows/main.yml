@@ -15,7 +15,7 @@ jobs:
       - name: Build an image from Dockerfile
         run: |
           # Dockerビルド
-          DOCKER_BUILDKIT=1 docker image build . -f app/Dockerfile --tag  docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
+          DOCKER_BUILDKIT=1 docker image build . -f app/Dockerfile -t docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
           
         # Trivyによるイメージスキャン
       - name: Run Trivy vulnerability scanner
@@ -28,24 +28,12 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
         # コンテナイメージをGitHub Packagesにプッシュ
-      #- name: Push image to GitHub Packages
-        #run: |
+      - name: Push image to GitHub Packages
+        run: |
           # GitHub Packages ログイン
-          #run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
+          run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
           # イメージプッシュ
-          #docker push docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
-      - name: Log in to GitHub Docker Registry
-        uses: docker/login-action@v1
-        with:
-          registry: docker.pkg.github.com
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: Build container image
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: |
-            docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
+          docker image push docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
         # values.yamlの更新、新規ブランチ作成、プッシュ、プルリクエスト
       - name: Update values.yaml & Pull Request to Config Repository
         run: |
