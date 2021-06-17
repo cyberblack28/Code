@@ -31,7 +31,7 @@ jobs:
           # GitHub Packages ログイン
           run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.USERNAME }} --password-stdin
           # イメージプッシュ
-          docker push docker.pkg.github.com/${{ secrets.USERNAME }}/gitops-go-app:${{ github.run_number }}
+          docker push docker.pkg.github.com/${{ github.repository }}/gitops-go-app:${{ github.run_number }}
         # values.yamlの更新、新規ブランチ作成、プッシュ、プルリクエスト
       - name: Update values.yaml & Pull Request to Config Repository
         run: |
